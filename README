@@ -1,1 +1,13 @@
-Hello World
+ *  Requirements: jquery.flot.navigate ( set zoom : {interactive: false})
+
+This plugin enables panning and zooming of individual data series.
+Hovering over a Y axis label will allow you to pan the respective series by dragging along the axis, and zoom on the Y axis using the mouse wheel.
+Hovering over the plot itself will allow panning of all series, and zooming on the X axis.
+This is behavior is not yet configurable.
+
+Issues:
+   * Sometimes the plugin takes a long time to kick in
+TODO:
+   * Add more options to control the behavior
+   * Add control to the x-axis
+
