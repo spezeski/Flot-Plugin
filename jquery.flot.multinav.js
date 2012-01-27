@@ -1,13 +1,16 @@
 /*  jQuery.flot.multinav
- *  Requirements: jquery.flot.navigate ( set zoom : {interactive: false})
 
 This plugin enables panning and zooming of individual data series.
+
 Hovering over a Y axis label will allow you to pan the respective series by dragging along the axis, and zoom on the Y axis using the mouse wheel.
 Hovering over the plot itself will allow panning of all series, and zooming on the X axis.
 This is behavior is not yet configurable.
 
+Tips:
+   * Set the labelWidth properties of the axes
+   * Set zoom : {interactive: false} for the navigation plugin
 Issues:
-   * Sometimes the plugin takes a long time to kick in
+   * The plugin hooks on drawOverlay, which in some cases needs to triggered manually with triggerRedrawOverlay();
 TODO:
    * Add more options to control the behavior
    * Add control to the x-axis
@@ -95,8 +98,8 @@ TODO:
 					// Enable pan and zoom for the x axis
 					//x_axis.options.min = x_axis.min;
 					//x_axis.options.min = x_axis.max;
-					x_axis.options.zoomRange = [0,x_data.count];
-					x_axis.options.panRange  = [0,x_data.count];
+					x_axis.options.zoomRange = [0,x_axis.datamax];
+					x_axis.options.panRange  = [0,x_axis.datamax];
 
 	
 					plot.draw();
@@ -152,16 +155,16 @@ TODO:
 
 		function bindEvents(plot, eventHolder) {
 			  var offset = plot.getPlotOffset();
-
+			//alert('hi');
 			  // Define double-click behavior.
 			  // Will center the horizontal zoom and pan of all series
 				function onDoubleClick(e) {
 					if (e.pageX > offset.left) {
 						var x_axis = plot.getAxes().xaxis;
 						x_axis.min = 0;
-						x_axis.max = x_data.count;
-						x_axis.zoomRange = [0,x_data.count];
-						x_axis.panRange  = [0,x_data.count];
+						x_axis.max = x_axis.datamax;
+						x_axis.zoomRange = [0,x_axis.datamax];
+						x_axis.panRange  = [0,x_axis.datamax];
 
 						plot.draw();
 						plot.pan({left:0});
@@ -171,7 +174,6 @@ TODO:
 			  // Define axis zooming behavior.
 			  // Will zoom along the x axis for all series
 				function onMouseWheel (e, delta) {
-						//$("#temp").text("");
 						if (e.pageX > offset.left) {
 							var c = plot.offset();
 							c.left = e.pageX - c.left;
@@ -191,6 +193,7 @@ TODO:
 
 		plot.hooks.bindEvents.push(bindEvents);
 		plot.hooks.drawOverlay.push(drawAxisDivs);
+		plot.triggerRedrawOverlay();
 	} // - end init
 
 	$.plot.plugins.push({
